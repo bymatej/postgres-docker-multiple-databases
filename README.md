@@ -8,7 +8,7 @@ Postgres offers the ability to specify only one database when used in docker. Th
 # The solution
 Mount the folder that contains a script into the `docker-entrypoint-initdb.d` folder inside the Postgres container. This script will be executed once the container is started. 
 
-The script contains a for loop that reads the list of database names (supplied via environment variable) and creates a database with that name, and grants it the adequate permissions.
+The script contains a for loop that reads the list of database names (supplied via an environment variable) and creates a database with that name and grants it adequate permissions.
 
 # The deep dive
 This is the docker-compose.yml file: 
@@ -38,13 +38,13 @@ volumes:
 
 There is just one service (`db`) that is the actual Postgres container. 
 
-There are two volumes of which one of them is defined at the bottom (`data-volume`) and it holds (persists) the DB data. 
+There are two volumes of which one of which is defined at the bottom (`data-volume`) and it holds (persists) the DB data. 
 
 Let's focus on the `db` service.
 
 - Image is `postgres:14.2`. Test it with a different version if needed. 
 - container name is irrelevant (change it to your liking)
-- environment variables are read from the `.env` file by default: NEVER PUSH YOUR `.env` FILE TO GIT. KEEP IT ON YOUR SERVER WITH ALL ITS SECRETS! The `.env-example` is provided as the example on how the `.env` should look like.
+- environment variables are read from the `.env` file by default: NEVER PUSH YOUR `.env` FILE TO GIT. KEEP IT ON YOUR SERVER WITH ALL ITS SECRETS! The `.env-example` is provided as an example of what the `.env` should look like.
 - port is irrelevant, the default one is used
 - volumes are already explained: the first one is for the data persistence, and the second one mounts a directory with a script into the initdb
 
@@ -61,7 +61,7 @@ DATABASE_NAMES=app1,app2
 This means that our username will be `postgres`, our password would be `postgres` and we would create two databases - one named `app1`, and another named `app2`. You can have as many database names as you want. Just separate them with a comma `,`.
 
 ### The script
-This is the script that actually creates the databases: 
+This is the script that creates the databases: 
 ```
 #!/bin/bash
 
@@ -92,7 +92,7 @@ As you can see, there is a for loops through the list of databases provided in t
 
 For each element in the list, the `create_user_and_database` function is called. 
 
-This function creates the database (name of the database is the entry passed into the function; the `$db` variable). It also grants all privileges on that database. 
+This function creates the database (name of the database is the entry passed into the function; the `$db` variable). It also grants all privileges to that database. 
 
 This script gets executed automatically when your container starts.
 
